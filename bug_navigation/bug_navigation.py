@@ -27,8 +27,8 @@ POS_TOLERANCE = 0.05            # Close enough in position to the goal (m).
 ANG_TOLERANCE = np.radians(5)   # Close enough in angle to the goal.
 
 SLICE_SIZE = np.radians(60)     # Width of the slice checked for obstacles.
-BLOCKED_DIST = 0.5              # Closer than this in the slice means blocked.
-CLEAR_DIST = 0.7                # Farther than this in the slice means clear.
+BLOCKED_DIST = 0.45             # Closer than this in the slice means blocked.
+CLEAR_DIST = 0.6                # Farther than this in the slice means clear.
 CLEAR_COUNT = 5                 # Scans the path must stay clear before
                                 # leaving AVOID_OBSTACLE.
 LEAVE_PROGRESS = 0.1            # Distance closer to the goal than where we
@@ -38,8 +38,8 @@ GAP_SLICE = np.radians(30)      # Width of slice that must be clear to pass.
 GAP_STEP = np.radians(5)        # Step size when searching outward for a gap.
 GAP_MAX = np.radians(150)       # Stop searching for a gap past this offset.
 
-SETPOINT = 0.5          # Distance held from the obstacle while avoiding (m).
-SAFETY_DIST = 0.25      # Closer than this and we only push away (m).
+SETPOINT = 0.35         # Distance held from the obstacle while avoiding (m).
+SAFETY_DIST = 0.2       # Closer than this and we only push away (m).
 FOLLOW_SPEED = 0.3      # Speed along the edge of the obstacle (m/s).
 DEADBAND = 0.05         # No correction while within this of SETPOINT (m).
 K_FOLLOW = 1.2          # Correction speed per meter of distance error.
