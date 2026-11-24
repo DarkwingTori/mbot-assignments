@@ -53,12 +53,12 @@ def wrap_angle(angle):
 
 robot = MBot()
 
-SETPOINT = 0.35         # Desired distance from the wall (meters). Must be less
+SETPOINT = 0.25         # Desired distance from the wall (meters). Must be less
                         # than half the corridor width.
-DEADBAND = 0.05         # No correction while within this distance of SETPOINT (m).
-DRIVE_SPEED = 0.25      # Speed along the wall (m/s).
-KP = 1.2                # Proportional gain: correction speed per meter of error.
-MAX_CORRECTION = 0.15   # Cap on the correction speed toward/away from the wall (m/s).
+DEADBAND = 0.02         # No correction while within this distance of SETPOINT (m).
+DRIVE_SPEED = 0.40      # Speed along the wall (m/s).
+KP = 2.0                # Proportional gain: correction speed per meter of error.
+MAX_CORRECTION = 0.20   # Cap on the correction speed toward/away from the wall (m/s).
 
 # If the robot is closer than this it is probably touching the wall and
 # jammed, so ignore the along-wall motion and back straight away from it.
@@ -66,10 +66,11 @@ STALL_DIST = 0.15       # (m)
 STALL_SPEED = 0.15      # Speed away from the wall while freeing itself (m/s).
 STALL_WARN_TIME = 3.0   # Warn if the lidar reading is frozen this long (s).
 
-# The Lidar reports angles measured clockwise, which is the opposite of the
-# robot body frame's right-hand-rule convention. Set to 1.0 if the raw lidar
-# angle is positive when the wall is physically on the robot's left.
-LIDAR_ANGLE_SIGN = -1.0
+# Sign between the raw lidar angle and the robot body frame (+x forward, +y
+# left, counter-clockwise positive). On this robot the raw lidar angle already
+# matches the body frame: a wall on the right reads about -90 deg. Set to -1.0
+# if the printed angle is positive when the wall is physically on the right.
+LIDAR_ANGLE_SIGN = 1.0
 
 # Calibration for a robot whose rear leads the motion. Only one of these
 # should need changing; measure it on the robot.
