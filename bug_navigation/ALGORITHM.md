@@ -19,9 +19,11 @@ Two derived quantities do most of the work:
 - `goal_angle` — the direction the robot must travel to reach the goal,
   measured in the **body frame**: `wrap_to_pi(atan2(dy, dx) - theta)`.
 
-The Lidar reports angles clockwise while the body frame counts them
-counter-clockwise, so converting between the two is a sign flip
-(`to_lidar_frame()`).
+On our robot the raw Lidar angle already counts counter-clockwise like the body
+frame (an obstacle on the right reads about -90°), so `LIDAR_ANGLE_SIGN` is
+`1.0` and `to_lidar_frame()` leaves angles unchanged. It is kept as a single
+sign so the code works on a robot whose Lidar counts clockwise: set it to `-1.0`
+there.
 
 ## Deciding whether the path is blocked
 

@@ -17,10 +17,11 @@ STATE_NAMES = {
     DONE: "DONE",
 }
 
-# The Lidar reports angles measured clockwise, which is the opposite of the
-# robot body frame's right-hand-rule convention. Set to 1.0 if the printed
-# min_angle is positive when the wall is physically on the robot's left.
-LIDAR_ANGLE_SIGN = -1.0
+# Sign between the Lidar angle and the robot body frame (+x forward, +y left,
+# counter-clockwise positive). On this robot the raw Lidar angle already
+# matches the body frame: an obstacle on the right reads about -90 deg. Set to
+# -1.0 if the printed angle is positive when the obstacle is on the right.
+LIDAR_ANGLE_SIGN = 1.0
 
 POS_TOLERANCE = 0.05            # Close enough in position to the goal (m).
 ANG_TOLERANCE = np.radians(5)   # Close enough in angle to the goal.
@@ -39,7 +40,7 @@ GAP_MAX = np.radians(150)       # Stop searching for a gap past this offset.
 
 SETPOINT = 0.5          # Distance held from the obstacle while avoiding (m).
 SAFETY_DIST = 0.25      # Closer than this and we only push away (m).
-FOLLOW_SPEED = 0.2      # Speed along the edge of the obstacle (m/s).
+FOLLOW_SPEED = 0.3      # Speed along the edge of the obstacle (m/s).
 DEADBAND = 0.05         # No correction while within this of SETPOINT (m).
 K_FOLLOW = 1.2          # Correction speed per meter of distance error.
 MAX_CORRECTION = 0.15   # Cap on the correction toward/away from it (m/s).
