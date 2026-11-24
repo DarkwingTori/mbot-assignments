@@ -198,6 +198,42 @@ def test_plan_converts_positions_to_cells():
     assert path[0] == (0, 0) and path[-1] == (4, 4)
 
 
+def test_escape_path_leaves_the_too_close_zone():
+    rows = blank(5, 9)
+    for r in range(5):
+        rows[r][0] = 1
+    g = make(rows, collision_radius=1.5)
+    assert g.check_collision(2, 1)          # Too close to the wall at column 0.
+    path = g.escape_path((2, 1))
+    assert path[0] == (2, 1)
+    assert not g.check_collision(*path[-1])
+    assert all(not g.is_occupied(*c) for c in path)
+
+
+def test_escape_path_of_a_free_cell_is_just_that_cell():
+    g = make(blank(5, 5))
+    assert g.escape_path((2, 2)) == [(2, 2)]
+
+
+def test_escape_path_is_empty_inside_an_obstacle_or_off_the_grid():
+    g = make(wall_with_gap())
+    assert g.escape_path((0, 2)) == []
+    assert g.escape_path((-1, 0)) == []
+
+
+def test_plan_works_from_inside_the_collision_zone():
+    rows = blank(5, 9)
+    for r in range(5):
+        rows[r][0] = 1
+    g = make(rows, collision_radius=1.5)
+    # Cell (2, 1) is within the collision radius, so a plain search refuses.
+    assert breadth_first_search(g, (2, 1), (2, 7)) == []
+    path = plan(g, (1.5, 2.5), (7.5, 2.5), use_astar=False)
+    assert path[0] == (2, 1)
+    assert path[-1] == (2, 7)
+    assert all(not g.is_occupied(*c) for c in path)
+
+
 def test_load_map_reads_assumed_format():
     text = "-1.0 -2.0 3 2 0.5\n0 0 1\n0 0 0\n"
     with tempfile.NamedTemporaryFile("w", suffix=".map", delete=False) as f:

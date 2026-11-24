@@ -16,6 +16,7 @@ cell_odds and obstacle_distances are stored.
 
 import heapq
 import math
+from collections import deque
 
 # Distance from the center of the robot to the edge of its body (m). The
 # course pages don't give a value, so this is a conservative placeholder
@@ -197,6 +198,45 @@ class GridGraph:
                     continue
             neighbours.append((ni, nj))
         return neighbours
+
+    def escape_path(self, cell):
+        """Shortest way out of the zone too close to an obstacle.
+
+        The robot often ends up closer to a wall than the collision radius:
+        ours sat 0.15 to 0.2 m from walls, while the collision radius is
+        larger. Every search refuses to start from such a cell, so the robot
+        would be told there is no path. This walks it out first, over cells
+        that are not themselves obstacles, to the nearest cell with enough
+        room.
+
+        Args:
+            cell (tuple): The (row, column) the robot is in.
+
+        Returns:
+            list: The cells from the given cell to the nearest cell the robot
+                can be centered on. Just [cell] if it is already free. Empty
+                if the cell is outside the grid or an obstacle, or no free
+                cell can be reached.
+        """
+        cell = tuple(cell)
+        if not self.in_bounds(*cell) or self.is_occupied(*cell):
+            return []
+
+        parents = {cell: None}
+        queue = deque([cell])
+        while queue:
+            current = queue.popleft()
+            if not self.check_collision(*current):
+                return self.trace_path(parents, current)
+            for d_row, d_col, _ in MOVES:
+                neighbour = (current[0] + d_row, current[1] + d_col)
+                if (neighbour in parents
+                        or not self.in_bounds(*neighbour)
+                        or self.is_occupied(*neighbour)):
+                    continue
+                parents[neighbour] = current
+                queue.append(neighbour)
+        return []
 
     def trace_path(self, parents, goal):
         """Walks back from the goal through the parents to build the path.

@@ -117,7 +117,17 @@ def plan(graph, start_pos, goal_pos, use_astar=True):
     start = graph.pos_to_cell(*start_pos)
     goal = graph.pos_to_cell(*goal_pos)
     search = a_star_search if use_astar else breadth_first_search
-    return search(graph, start, goal)
+
+    # If the robot is closer to a wall than the collision radius, the search
+    # would refuse to start. Walk it out to the nearest free cell first, then
+    # plan from there.
+    escape = graph.escape_path(start)
+    if not escape:
+        return []
+    path = search(graph, escape[-1], goal)
+    if not path:
+        return []
+    return escape[:-1] + path
 
 
 def wait_for_goal(robot, goal_pos):
